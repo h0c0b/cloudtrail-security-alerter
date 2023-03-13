@@ -1,0 +1,87 @@
+[[rule]]
+name = "Create User"
+jq_match = 'select(.eventName == "CreateUser") | "username: \(.responseElements.user.userName)"'
+description = "A new IAM user has been created"
+destinations = ["Slack"]
+
+[[rule]]
+name = "Create AccessKey"
+jq_match = 'select(.eventName == "CreateAccessKey")'
+description = "A new Access Key has been created"
+destinations = ["Slack"]
+
+[[rule]]
+name = "New Console Login"
+jq_match = 'select(.eventName == "ConsoleLogin")'
+description = "A new AWS Console login was registered"
+destinations = ["Slack"]
+
+[[rule]]
+name = "Authorization Errors"
+jq_match = 'select(select (.errorCode!=null) | (.errorCode | contains("AccessDenied"))or (.errorCode | contains("UnauthorizedOperation")))'
+description = "Unauthorized operations registered"
+destinations = ["Slack"]
+
+[[rule]]
+name = "Security Group Changes"
+jq_match = 'select((.eventName | contains("AuthorizeSecurityGroupIngress"))or (.eventName | contains("AuthorizeSecurityGroupEgress")) or (.eventName | contains("RevokeSecurityGroupIngress")) or (.eventName | contains("RevokeSecurityGroupEgress")) or (.eventName | contains("CreateSecurityGroup")) or (.eventName | contains("DeleteSecurityGroup")))'
+description = "Alarms when an API call is made to create, update or delete a Security Group."
+destinations = ["Slack"]
+
+[[rule]]
+name = "Network ACL Changes"
+jq_match = 'select((.eventName | contains("CreateNetworkAcl"))or (.eventName | contains("CreateNetworkAclEntry")) or (.eventName | contains("DeleteNetworkAcl")) or (.eventName | contains("DeleteNetworkAclEntry")) or (.eventName | contains("ReplaceNetworkAclEntry")) or (.eventName | contains("ReplaceNetworkAclAssociation")))'
+description = "Alarms when an API call is made to create, update or delete a Network ACL."
+destinations = ["Slack"]
+
+[[rule]]
+name = "Gateway Changes"
+jq_match = 'select((.eventName | contains("CreateCustomerGateway"))or (.eventName | contains("DeleteCustomerGateway")) or (.eventName | contains("AttachInternetGateway")) or (.eventName | contains("CreateInternetGateway")) or (.eventName | contains("DeleteInternetGateway")) or (.eventName | contains("DetachInternetGateway")))'
+description = "Alarms when an API call is made to create, update or delete a Customer or Internet Gateway."
+destinations = ["Slack"]
+
+[[rule]]
+name = "VPC Changes"
+jq_match = 'select((.eventName | contains("CreateVpc"))or (.eventName | contains("DeleteVpc")) or (.eventName | contains("ModifyVpcAttribute")) or (.eventName | contains("AcceptVpcPeeringConnection")) or (.eventName | contains("CreateVpcPeeringConnection")) or (.eventName | contains("DeleteVpcPeeringConnection")) or (.eventName | contains("RejectVpcPeeringConnection")) or (.eventName | contains("AttachClassicLinkVpc")) or (.eventName | contains("DetachClassicLinkVpc"))  or (.eventName | contains("DisableVpcClassicLink"))  or (.eventName | contains("EnableVpcClassicLink")))'
+description = "Alarms when an API call is made to create, update or delete a VPC, VPC peering connection or VPC connection to classic."
+destinations = ["Slack"]
+
+[[rule]]
+name = "CloudTrail Changes"
+jq_match = 'select((.eventName | contains("CreateTrail"))or (.eventName | contains("UpdateTrail")) or (.eventName | contains("DeleteTrail")) or (.eventName | contains("StartLogging")) or (.eventName | contains("StopLogging")))'
+description =  "Alarms when an API call is made to create, update or delete a CloudTrail trail, or to start or stop logging to a trail."
+destinations = ["Slack"]
+
+[[rule]]
+name = "Console Sign In Failures"
+jq_match = 'select((.eventName | contains("ConsoleLogin")) and (.errorMessage | contains("Failed authentication")))'
+description = "Console sign in failures detected"
+destinations = ["Slack"]
+
+[[rule]]
+name = "IAM Policy Changes"
+jq_match = 'select((.eventName | contains("DeleteGroupPolicy"))or (.eventName | contains("DeleteRolePolicy")) or (.eventName | contains("DeleteUserPolicy")) or (.eventName | contains("PutGroupPolicy")) or (.eventName | contains("PutRolePolicy")) or (.eventName | contains("PutUserPolicy")) or (.eventName | contains("CreatePolicy")) or (.eventName | contains("DeletePolicy")) or (.eventName | contains("CreatePolicyVersion"))  or (.eventName | contains("DeletePolicyVersion"))  or (.eventName | contains("AttachRolePolicy")) or (.eventName | contains("DetachRolePolicy")) or (.eventName | contains("AttachUserPolicy")) or (.eventName | contains("DetachUserPolicy")) or (.eventName | contains("AttachGroupPolicy")) or (.eventName | contains("DetachGroupPolicy")))'
+description = "VPC changes detected"
+destinations = ["Slack"]
+
+[[rule]]
+name = "Running Large EC2 Insatnces "
+jq_match = 'select((.eventName | contains("RunInstances")) and (.requestParameters.instanceType | contains("8xlarge")))'
+description = "Alarms when an API call is made to create, terminate, start, stop or reboot a 4x or 8x-large EC2 instance."
+destinations = ["Slack"]
+
+[[destination]]
+id = "Default SNS"
+type = "sns"
+sns_arn = "arn:aws:sns:eu-central-1:204356633561:CloudWatchAlarmsForCloudTrail-AlarmNotificationTopic-1AI7RJCKF4KGZ"
+
+[[destination]]
+id = "Slack"
+type = "slack_webhook"
+webhook_url = "https://hooks.slack.com/services/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"
+
+[[destination]]
+id = "Email"
+type = "ses"
+to_emails = ["foo@example.com", "bar@example.com"]
+from_email = "cloudtrail_alerts@example.com"
