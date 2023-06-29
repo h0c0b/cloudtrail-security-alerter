@@ -73,12 +73,12 @@ destinations = ["Slack"]
 [[destination]]
 id = "Default SNS"
 type = "sns"
-sns_arn = "arn:aws:sns:eu-central-1:204356633561:CloudWatchAlarmsForCloudTrail-AlarmNotificationTopic-1AI7RJCKF4KGZ"
+sns_arn = "arn:aws:sns:eu-central-1:XXXXXXXXX:CloudWatchAlarmsForCloudTrail-AlarmNotificationTopic"
 
 [[destination]]
 id = "Slack"
 type = "slack_webhook"
-webhook_url = "https://hooks.slack.com/services/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"
+webhook_url = "https://hooks.slack.com/services/TFFT7EHSB/B02TXXCC/XXXX"
 
 [[destination]]
 id = "Email"
